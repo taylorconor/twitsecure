@@ -4,12 +4,11 @@
  * client/requestAuth.php
  *
  * Used by the client to initiate the request for authentication with the
- * translation server, using the Diffie-Hellman Key Exchange method
+ * Key Authority server, using the Diffie-Hellman Key Exchange method
  */
 
-// client's secret, also known as 'x'
-define("SECRET", 6);
-define("TRANSLATOR", "http://localhost/translator");
+require_once("constants.php");
+require_once("../crypto.php");
 
 // list some prime numbers
 $primes = array(961751207, 961751209, 961751243, 961751257,
@@ -20,13 +19,12 @@ $g = rand(5, 50);
 $gx = bcmod(bcpow($g, SECRET), $n);
 
 // hardcoded just for testing
-$handle = "taylorconor95";
+$handle = "cs3031a";
 
 try {
-	// send the request to create authorisation with the translator
 	$res = json_decode(
 		file_get_contents(
-			TRANSLATOR."/createAuth?handle=$handle&n=$n&g=$g&gx=$gx"
+			KEYAUTHORITY."/createAuth?handle=$handle&n=$n&g=$g&gx=$gx"
 		), true
 	);
 }
@@ -41,7 +39,25 @@ if (isset($res["error"])) {
 	die("Response error");
 }
 
-// finally calculate the key
+// calculate the Key Authority's key
 $key = bcmod(bcpow($res["gy"], SECRET), $n);
+$id = $res["id"];
 
-die($key);
+echo "key = $key\n";
+
+// send Twitter password over encrypted channel so the Key Authority can
+// verify that this user is who he says he is
+$password = Crypto::encrypt("cs3031", $key);
+try {
+	// send the request to create authorisation with the Key Authority
+	$res = json_decode(
+		file_get_contents(
+			KEYAUTHORITY."/verifyAuth?id=$id&pass=$password"
+		), true
+	);
+}
+catch (Exception $ex) {
+	die("Error connecting to server");
+}
+
+die($res);
