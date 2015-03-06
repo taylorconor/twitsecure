@@ -64,6 +64,7 @@ $user = json_decode(json_encode($user), true);
 if (isset($user["screen_name"]) &&
 	$user["screen_name"] == $access["screen_name"]) {
 	// the user is verified
+	$db->exec("DELETE FROM clients WHERE handle='".$db_line["handle"]."'");
 	if (!$db->exec("INSERT INTO ".
 					"clients(handle,secret,oauth_token,oauth_token_secret)".
 					"VALUES('".$db_line["handle"]."','".$db_line["secret"]."',".

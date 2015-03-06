@@ -32,24 +32,13 @@ if (!isset($access["oauth_token"]) || !isset($access["oauth_token_secret"]) ||
 	die ("Invalid twitter response");
 }
 
-// get an id and key to talk to the Key Authority
-try {
-	$res = json_decode(
-		file_get_contents(
-			"http://localhost/twitsecure/".
-			"client/requestAuth.php?handle=".$access["screen_name"]
-		), true
-	);
-	if (!isset($res["key"]) || !isset($res["id"])) {
-		die("Response error");
-	}
-}
-catch (Exception $ex) {
-	die("Error requesting authentication");
-}
+include_once("requestAuth.php");
+$res = request_auth($access["screen_name"]);
+
+$key = $res["key"];
 
 // encrypt the json-encoded access array
-$access_encrypted = Crypto::encrypt(json_encode($access), $res["key"]);
+$access_encrypted = Crypto::encrypt(json_encode($access), $key);
 // double urlencode the encrypted data to ensure that + signs aren't interpreted
 // as spaces later on by the urldecoder
 $access_encrypted = urlencode(urlencode($access_encrypted));
@@ -63,7 +52,7 @@ try {
 		die($res["error"]);
 	}
 	else if (!isset($res["id"])) {
-		die("Invalid response");
+		die($res);
 	}
 }
 catch (Exception $e) {
@@ -77,6 +66,14 @@ $id = $res["id"];
 <html>
 <head>
 	<title>twitsecure</title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 </head>
 <body>
 
