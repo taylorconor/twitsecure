@@ -1,8 +1,7 @@
-<?php
+<?
 
-// client's secret, also known as 'x'
-define("SECRET", 6);
-define("KEYAUTHORITY", "http://localhost/twitsecure/keyAuthority");
+// Key Authority's secret, also known as 'y'
+define("SECRET", 15);
 
 // twitter credentials
 define("CONSUMER_KEY", "u4Yz0JmEvkxYCRu2uglk9eg8u");

@@ -1,13 +1,13 @@
-<?
+<?php
 
 class Crypto {
 
-	static function encrypt($sValue, $sSecretKey) {
+	static function encrypt($value, $key) {
 		return rtrim(
 			base64_encode(
 				mcrypt_encrypt(
 					MCRYPT_RIJNDAEL_256,
-					$sSecretKey, $sValue,
+					$key, $value,
 					MCRYPT_MODE_ECB,
 					mcrypt_create_iv(
 						mcrypt_get_iv_size(
@@ -20,12 +20,11 @@ class Crypto {
 		);
 	}
 
-	static function decrypt($sValue, $sSecretKey) {
+	static function decrypt($value, $key) {
 		return rtrim(
 			mcrypt_decrypt(
 				MCRYPT_RIJNDAEL_256,
-				$sSecretKey,
-				base64_decode($sValue),
+				$key, base64_decode($value),
 				MCRYPT_MODE_ECB,
 				mcrypt_create_iv(
 					mcrypt_get_iv_size(

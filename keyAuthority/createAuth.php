@@ -9,6 +9,7 @@
  * in the database
  */
 
+require_once("constants.php");
 require_once("KeyAuthorityDB.php");
 
 // the return values
@@ -20,9 +21,6 @@ if (!isset($_REQUEST["handle"]) || !isset($_REQUEST["n"]) ||
 	$ret["error"] = "Invalid request";
 	die(json_encode($ret));
 }
-
-// Key Authority's secret, also known as 'y'
-define("SECRET", 15);
 
 $n = $_REQUEST["n"];
 $g = $_REQUEST["g"];

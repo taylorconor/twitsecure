@@ -1,4 +1,4 @@
-<?
+<?php
 
 /*
  * client/requestAuth.php
@@ -10,6 +10,13 @@
 require_once("constants.php");
 require_once("../crypto.php");
 
+if (!isset($_REQUEST["handle"])) {
+	die("Invalid request");
+}
+
+// twitter handle
+$handle = $_REQUEST["handle"];
+
 // list some prime numbers
 $primes = array(961751207, 961751209, 961751243, 961751257,
 				961751261, 961751267, 961751321, 961751339);
@@ -18,13 +25,10 @@ $n = $primes[array_rand($primes)];
 $g = rand(5, 50);
 $gx = bcmod(bcpow($g, SECRET), $n);
 
-// hardcoded just for testing
-$handle = "cs3031a";
-
 try {
 	$res = json_decode(
 		file_get_contents(
-			KEYAUTHORITY."/createAuth?handle=$handle&n=$n&g=$g&gx=$gx"
+			KEYAUTHORITY."/createAuth.php?handle=$handle&n=$n&g=$g&gx=$gx"
 		), true
 	);
 }
@@ -39,25 +43,10 @@ if (isset($res["error"])) {
 	die("Response error");
 }
 
-// calculate the Key Authority's key
-$key = bcmod(bcpow($res["gy"], SECRET), $n);
-$id = $res["id"];
+$ret = array();
 
-echo "key = $key\n";
+// calculate the shared key
+$ret["key"] = bcmod(bcpow($res["gy"], SECRET), $n);
+$ret["id"] = $res["id"];
 
-// send Twitter password over encrypted channel so the Key Authority can
-// verify that this user is who he says he is
-$password = Crypto::encrypt("cs3031", $key);
-try {
-	// send the request to create authorisation with the Key Authority
-	$res = json_decode(
-		file_get_contents(
-			KEYAUTHORITY."/verifyAuth?id=$id&pass=$password"
-		), true
-	);
-}
-catch (Exception $ex) {
-	die("Error connecting to server");
-}
-
-die($res);
+die(json_encode($ret));
