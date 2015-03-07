@@ -29,10 +29,18 @@ $url = $connection->url('oauth/authorize',
 ?>
 
 <html>
-	<head>
-		<title>twitsecure</title>
-	</head>
-	<body>
-		<a href="<?= $url ?>">Sign in with Twitter</a>
-	</body>
+<head>
+	<title>twitsecure</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container text-center">
+	<h1>twitsecure</h1>
+	<br>
+	<a href="<?= $url ?>">
+		<img src="images/sign-in-with-twitter-gray.png"/>
+	</a>
+</div>
+</body>
 </html>
