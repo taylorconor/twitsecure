@@ -1,7 +1,7 @@
 <?php
 
 /*
- * client/requestAuth.php
+ * client/requester.php
  *
  * Used by the client to initiate the request for authentication with the
  * Key Authority server, using the Diffie-Hellman Key Exchange method
@@ -13,9 +13,6 @@ require "../twitteroauth/autoload.php";
 use Abraham\TwitterOAuth\TwitterOAuth;
 
 function request_auth($oauth_token, $oauth_token_secret) {
-
-	// return values
-	$ret = array();
 
 	// build a temporary twitter connection based on the temporary oauth keys
 	$connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET,
@@ -55,16 +52,13 @@ function request_auth($oauth_token, $oauth_token_secret) {
 		die("Error requesting keyAuthority/verifyAuth");
 	}
 
-	$ret["key"] = $key;
-	$ret["id"] = $res["id"];
-
-	return $ret;
+	return array(
+		"key" => $key,
+		"id" => $res["id"]
+	);
 }
 
 function ka_verify($handle) {
-
-	// return values
-	$ret = array();
 
 	// list some prime numbers
 	$primes = array(961751207, 961751209, 961751243, 961751257,
@@ -90,9 +84,20 @@ function ka_verify($handle) {
 		die("Response error");
 	}
 
-	// calculate the shared key
-	$ret["key"] = bcmod(bcpow($res["gy"], SECRET), $n);
-	$ret["id"] = $res["id"];
+	return array(
+		"key" => bcmod(bcpow($res["gy"], SECRET), $n),
+		"id" => $res["id"]
+	);
+}
 
-	return $ret;
+function get_tweets($id, $key) {
+	try {
+		$res = file_get_contents(
+			KEYAUTHORITY."/getTweets.php?id=$id"
+		);
+	} catch (Exception $e) {
+		die("Error requesting keyAuthority/getTweets");
+	}
+
+	return json_decode(Crypto::decrypt($res, $key), true);
 }
