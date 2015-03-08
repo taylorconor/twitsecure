@@ -90,6 +90,17 @@ function ka_verify($handle) {
 	);
 }
 
+function utf8_decode_r($d) {
+	if (is_array($d)) {
+		foreach ($d as $k => $v) {
+			$d[$k] = utf8_decode_r($v);
+		}
+	} else if (is_string ($d)) {
+		return utf8_decode($d);
+	}
+	return $d;
+}
+
 function get_tweets($id, $key) {
 	try {
 		$res = file_get_contents(
@@ -99,5 +110,5 @@ function get_tweets($id, $key) {
 		die("Error requesting keyAuthority/getTweets");
 	}
 
-	return json_decode(Crypto::decrypt($res, $key), true);
+	return utf8_decode_r(json_decode(Crypto::decrypt($res, $key), true));
 }

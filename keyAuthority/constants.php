@@ -1,5 +1,8 @@
 <?
 
+// Key Authority's tweet signing key
+define("TWEET_KEY", 1234567);
+
 // Key Authority's secret, also known as 'y'
 define("SECRET", 15);
 

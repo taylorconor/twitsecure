@@ -31,5 +31,27 @@ $connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET,
 	OAUTH_TOKEN, OAUTH_TOKEN_SECRET);
 
 $json = $connection->get("statuses/mentions_timeline");
+$json = json_decode(json_encode($json), true);
+
+// decrypt all tweets in the response with the KA's secret key. these tweets
+// will be re-encrypted later in this file using the client's key instead
+foreach ($json as $idx => $tweet) {
+	$text = $json[$idx]["text"];
+	$text = "@cs3031 ".Crypto::decrypt(substr($text, 8), TWEET_KEY);
+	$json[$idx]["text"] = $text;
+}
+
+// recurse over entire array structure and UTF8 encode it
+function utf8_encode_r($d) {
+	if (is_array($d)) {
+		foreach ($d as $k => $v) {
+			$d[$k] = utf8_encode_r($v);
+		}
+	} else if (is_string ($d)) {
+		return utf8_encode($d);
+	}
+	return $d;
+}
+
 // return the json encoded & encrypted tweets
-die(Crypto::encrypt(json_encode($json), $secret));
+die(Crypto::encrypt(json_encode(utf8_encode_r($json)), $secret));
