@@ -33,7 +33,22 @@ $tweets = get_tweets($_SESSION["id"], $_SESSION["key"]);
 	<title>twitsecure</title>
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/corgi.css">
+	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
+	<script>
+	$(function() {
+		$('form').on('submit', function(e) {
+			$.ajax({
+				type: 'POST',
+				url: 'tweet.php',
+				data: { t: $('#tweetbox').val() }
+			});
+			e.preventDefault();
+			// clear the tweet text from the tweetbox after it's been sent
+			$('#tweetbox').val('');
+		});
+	});
+	</script>
 </head>
 <body>
 <div class="container">
@@ -43,8 +58,8 @@ $tweets = get_tweets($_SESSION["id"], $_SESSION["key"]);
 	<div class="corgi_feed_well col-xs-4">
 		<div class="feed_body">
 			<div class="row">
-				<form action="tweet.php" action="POST">
-					<input name="t" style="width:275px">
+				<form>
+					<input id="tweetbox" name="t" style="width:275px">
 					<input type="submit" value="tweet" class="btn btn-primary">
 				</form>
 			</div>
