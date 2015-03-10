@@ -23,8 +23,8 @@ function request_auth($oauth_token, $oauth_token_secret) {
 		array("oauth_verifier" => $_REQUEST['oauth_verifier']));
 
 
-	if (!isset($access["oauth_token"]) || !isset($access["oauth_token_secret"]) ||
-		!isset($access["user_id"]) || !isset($access["screen_name"])) {
+	if (!isset($access["oauth_token"]) || !isset($access["oauth_token_secret"])
+		|| !isset($access["user_id"]) || !isset($access["screen_name"])) {
 		die ("Invalid twitter response");
 	}
 
@@ -34,8 +34,8 @@ function request_auth($oauth_token, $oauth_token_secret) {
 
 	// encrypt the json-encoded access array
 	$access_encrypted = Crypto::encrypt(json_encode($access), $key);
-	// double urlencode the encrypted data to ensure that + signs aren't interpreted
-	// as spaces later on by the urldecoder
+	// double urlencode the encrypted data to ensure that + signs aren't
+	// interpreted as spaces later on by the urldecoder
 	$access_encrypted = urlencode(urlencode($access_encrypted));
 
 	try {

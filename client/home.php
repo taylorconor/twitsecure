@@ -6,10 +6,12 @@ require "../twitteroauth/autoload.php";
 use Abraham\TwitterOAuth\TwitterOAuth;
 
 if (!isset($_SESSION["id"]) || !isset($_SESSION["key"])) {
-	if (!isset($_REQUEST["oauth_token"]) || !isset($_REQUEST["oauth_verifier"])) {
+	if (!isset($_REQUEST["oauth_token"]) ||
+		!isset($_REQUEST["oauth_verifier"])) {
 		die("Invalid request");
 	}
-	if (!isset($_SESSION["oauth_token"]) || !isset($_SESSION["oauth_token_secret"])) {
+	if (!isset($_SESSION["oauth_token"]) ||
+		!isset($_SESSION["oauth_token_secret"])) {
 		die("Invalid session");
 	}
 	if ($_SESSION['oauth_token'] != $_REQUEST["oauth_token"]) {
@@ -20,7 +22,8 @@ if (!isset($_SESSION["id"]) || !isset($_SESSION["key"])) {
 	require_once("constants.php");
 
 	// request authorisation with the Key Authority
-	$res = request_auth($_SESSION["oauth_token"], $_SESSION["oauth_token_secret"]);
+	$res = request_auth($_SESSION["oauth_token"],
+						$_SESSION["oauth_token_secret"]);
 
 	// set session variables of our auth with the Key Authority
 	$_SESSION["id"] = $res["id"];
