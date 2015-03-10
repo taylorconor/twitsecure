@@ -112,3 +112,15 @@ function get_tweets($id, $key) {
 
 	return utf8_decode_r(json_decode(Crypto::decrypt($res, $key), true));
 }
+
+function send_tweet($id, $tweet, $key) {
+	$t = urlencode(urlencode(Crypto::encrypt($tweet, $key)));
+	try {
+		$res = file_get_contents(
+			KEYAUTHORITY."/postTweet.php?id=$id&t=$t"
+		);
+	} catch (Exception $e) {
+		die("Error requesting keyAuthority/getTweets");
+	}
+	return $res;
+}

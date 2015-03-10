@@ -17,8 +17,14 @@ require_once("constants.php");
 require "../twitteroauth/autoload.php";
 use Abraham\TwitterOAuth\TwitterOAuth;
 
+// request authorisation with the Key Authority
 $res = request_auth($_SESSION["oauth_token"], $_SESSION["oauth_token_secret"]);
-$tweets = get_tweets($res["id"], $res["key"]);
+
+// set session variables of our auth with the Key Authority
+$_SESSION["id"] = $res["id"];
+$_SESSION["key"] = $res["key"];
+
+$tweets = get_tweets($_SESSION["id"], $_SESSION["key"]);
 
 ?>
 
@@ -34,21 +40,18 @@ $tweets = get_tweets($res["id"], $res["key"]);
 	<h1 class="text-center">twitsecure</h1>
 	<br>
 	<div class="row">
-	<div class="corgi_feed_well col-xs-5">
+	<div class="corgi_feed_well col-xs-4">
 		<div class="feed_body">
 			<div class="row">
-				<div class="feed_profile_pic">
-					<img src="#" alt="meta image"
-						 class="meta_image">
-				</div>
-				<div class="feed_text">
-					<p>yohoho</p>
-				</div>
+				<form action="tweet.php" action="POST">
+					<input name="t" style="width:275px">
+					<input type="submit" value="tweet" class="btn btn-primary">
+				</form>
 			</div>
 		</div>
 	</div>
 
-	<div class="corgi_feed_well col-xs-5 col-xs-offset-2">
+	<div class="corgi_feed_well col-xs-7 col-xs-offset-1">
 	<?php
 	foreach($tweets as $tweet) {
 		?>
