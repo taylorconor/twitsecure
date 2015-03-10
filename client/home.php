@@ -2,29 +2,30 @@
 
 session_start();
 
-if (!isset($_REQUEST["oauth_token"]) || !isset($_REQUEST["oauth_verifier"])) {
-	die("Invalid request");
-}
-if (!isset($_SESSION["oauth_token"])||!isset($_SESSION["oauth_token_secret"])) {
-	die("Invalid session");
-}
-if ($_SESSION['oauth_token'] != $_REQUEST["oauth_token"]) {
-	die("Session and request tokens don't match");
-}
-
-require_once("requester.php");
-require_once("constants.php");
 require "../twitteroauth/autoload.php";
 use Abraham\TwitterOAuth\TwitterOAuth;
 
-// request authorisation with the Key Authority
-$res = request_auth($_SESSION["oauth_token"], $_SESSION["oauth_token_secret"]);
+if (!isset($_SESSION["id"]) || !isset($_SESSION["key"])) {
+	if (!isset($_REQUEST["oauth_token"]) || !isset($_REQUEST["oauth_verifier"])) {
+		die("Invalid request");
+	}
+	if (!isset($_SESSION["oauth_token"]) || !isset($_SESSION["oauth_token_secret"])) {
+		die("Invalid session");
+	}
+	if ($_SESSION['oauth_token'] != $_REQUEST["oauth_token"]) {
+		die("Session and request tokens don't match");
+	}
 
-// set session variables of our auth with the Key Authority
-$_SESSION["id"] = $res["id"];
-$_SESSION["key"] = $res["key"];
+	require_once("requester.php");
+	require_once("constants.php");
 
-$tweets = get_tweets($_SESSION["id"], $_SESSION["key"]);
+	// request authorisation with the Key Authority
+	$res = request_auth($_SESSION["oauth_token"], $_SESSION["oauth_token_secret"]);
+
+	// set session variables of our auth with the Key Authority
+	$_SESSION["id"] = $res["id"];
+	$_SESSION["key"] = $res["key"];
+}
 
 ?>
 
@@ -48,6 +49,16 @@ $tweets = get_tweets($_SESSION["id"], $_SESSION["key"]);
 			$('#tweetbox').val('');
 		});
 	});
+	setInterval(function(){
+		$.ajax({
+			type: 'GET',
+			url: 'getFeed.php',
+			success: function(result) {
+				console.log("run!");
+				$("#tweet-container").html(result);
+			}
+		});
+	},5000);
 	</script>
 </head>
 <body>
@@ -66,26 +77,16 @@ $tweets = get_tweets($_SESSION["id"], $_SESSION["key"]);
 		</div>
 	</div>
 
-	<div class="corgi_feed_well col-xs-7 col-xs-offset-1">
-	<?php
-	foreach($tweets as $tweet) {
-		?>
+	<div id="tweet-container" class="corgi_feed_well col-xs-7 col-xs-offset-1">
 		<div class="feed_stacked">
-		<div class="feed_body">
-			<div class="row">
-				<div class="feed_profile_pic">
-					<img src="<?= $tweet["user"]["profile_image_url"] ?>" alt="meta image"
-						 class="meta_image">
-				</div>
-				<div class="feed_text">
-					<p><?= $tweet["text"] ?></p>
+			<div class="feed_body">
+				<div class="row">
+					<div class="feed_text">
+						<p>No tweets to this group yet</p>
+					</div>
 				</div>
 			</div>
 		</div>
-		</div>
-	<?php
-	}
-	?>
 	</div>
 	</div>
 </div>
