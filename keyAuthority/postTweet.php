@@ -30,8 +30,8 @@ $tweet = Crypto::decrypt($tweet, $secret);
 // encrypt the tweet with the KA secret
 $tweet = Crypto::encrypt($tweet, TWEET_KEY);
 
-// add the @cs3031 user to the tweet so it's being sent to the "group"
-$tweet = "@cs3031 ".$tweet;
+// add the group leader to the tweet so it's being sent to the whole group
+$tweet = "@".GROUP_LEADER." ".$tweet;
 
 require "../twitteroauth/autoload.php";
 use Abraham\TwitterOAuth\TwitterOAuth;

@@ -26,7 +26,7 @@ require_once("../crypto.php");
 require "../twitteroauth/autoload.php";
 use Abraham\TwitterOAuth\TwitterOAuth;
 
-// make a connection as @cs3031
+// make a connection as the group leader
 $connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET,
 	OAUTH_TOKEN, OAUTH_TOKEN_SECRET);
 
@@ -37,8 +37,8 @@ $json = json_decode(json_encode($json), true);
 // will be re-encrypted later in this file using the client's key instead
 foreach ($json as $idx => $tweet) {
 	$text = $json[$idx]["text"];
-	$text = "@cs3031 ".Crypto::decrypt(substr($text, 8), TWEET_KEY);
-	$json[$idx]["text"] = $text;
+	$text = Crypto::decrypt(substr($text, strlen(GROUP_LEADER)+2), TWEET_KEY);
+	$json[$idx]["text"] = "@".GROUP_LEADER." ".$text;
 }
 
 // recurse over entire array structure and UTF8 encode it
