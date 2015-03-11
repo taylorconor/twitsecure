@@ -8,13 +8,9 @@ require_once("KeyAuthorityDB.php");
 require_once("../crypto.php");
 require_once("constants.php");
 
-// the return values
-$ret = array();
-
 // verify the auth request
 if (!isset($_REQUEST["id"]) || !isset($_REQUEST["access"])) {
-	$ret["error"] = "Invalid request";
-	die(json_encode($ret));
+	die(json_encode(array("error" => "Invalid request")));
 }
 
 $id = $_REQUEST["id"];
@@ -22,8 +18,7 @@ $access_encrypted = urldecode($_REQUEST["access"]);
 
 $db = KeyAuthorityDB::instance();
 if (!$db) {
-	$ret["error"] = "DB fail";
-	die(json_encode($ret));
+	die(json_encode(array("error" => "DB fail")));
 }
 
 $res = $db->query("SELECT * FROM staging WHERE pk=$id");
@@ -34,19 +29,17 @@ try {
 	$access = json_decode(Crypto::decrypt($access_encrypted, $secret), true);
 }
 catch (Exception $ex) {
-	$ret["error"] = "JSON decoding error";
-	die(json_encode($ret));
+	die(json_encode(array("error" => "JSON decoding error")));
 }
 
 if (!isset($access["oauth_token"]) || !isset($access["oauth_token_secret"]) ||
 	!isset($access["user_id"]) || !isset($access["screen_name"])) {
-	$ret["error"] = "JSON decoding error";
-	die(json_encode($ret));
+	die(json_encode(array("error" => "JSON decoding error")));
 }
 
 if ($access["screen_name"] != $db_line["handle"]) {
-	$ret["error"] = "screen_name mismatch between DB and request";
-	die(json_encode($ret));
+	die(json_encode(array(
+		"error" => "screen_name mismatch between DB and request")));
 }
 
 require "../twitteroauth/autoload.php";
@@ -58,7 +51,7 @@ $connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET,
 
 // get the credentials for this user from twitter
 $user = $connection->get("account/verify_credentials");
-// dirty hack to convert $user from stdClass into an array
+// convert $user from stdClass into an array
 $user = json_decode(json_encode($user), true);
 
 if (isset($user["screen_name"]) &&
@@ -70,19 +63,14 @@ if (isset($user["screen_name"]) &&
 					"VALUES('".$db_line["handle"]."','".$db_line["secret"]."',".
 					"'".$access['oauth_token']."',".
 					"'".$access['oauth_token_secret']."')")) {
-		$ret["error"] = "DB fail";
-		die(json_encode($ret));
+		die(json_encode(array("error" => "DB fail")));
 	}
 
-	// get the user's new id
-	$id = $db->lastInsertRowID();
-
-	$ret["id"] = $id;
-	die(json_encode($ret));
+	// return the user's new id
+	die(json_encode(array("id" => $db->lastInsertRowID())));
 }
 else {
 	// delete the user from staging since he's invalid
 	$db->exec("DELETE FROM staging WHERE pk=$id");
-	$ret["error"] = "Twitter verification failed";
-	die(json_encode($ret));
+	die(json_encode(array("error" => "Twitter verification failed")));
 }
