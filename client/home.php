@@ -25,9 +25,11 @@ if (!isset($_SESSION["id"]) || !isset($_SESSION["key"])) {
 	$res = request_auth($_SESSION["oauth_token"],
 						$_SESSION["oauth_token_secret"]);
 
-	// set session variables of our auth with the Key Authority
-	$_SESSION["id"] = $res["id"];
-	$_SESSION["key"] = $res["key"];
+	if (isset($res["id"]) && isset($res["key"])) {
+		// set session variables of our auth with the Key Authority
+		$_SESSION["id"] = $res["id"];
+		$_SESSION["key"] = $res["key"];
+	}
 }
 
 ?>
@@ -69,6 +71,12 @@ if (!isset($_SESSION["id"]) || !isset($_SESSION["key"])) {
 	<h1 class="text-center">twitsecure</h1>
 	<br>
 	<div class="row">
+
+	<?php
+	if (isset($res["error"])) { ?>
+	<h2 class="text-center" style="color: #F00"><?= $res["error"] ?></h2>
+	<?php
+	} else { ?>
 	<div class="corgi_feed_well col-xs-4">
 		<div class="feed_body">
 			<div class="row">
@@ -91,6 +99,7 @@ if (!isset($_SESSION["id"]) || !isset($_SESSION["key"])) {
 			</div>
 		</div>
 	</div>
+	<?php } ?>
 	</div>
 </div>
 </body>

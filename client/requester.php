@@ -29,6 +29,9 @@ function request_auth($oauth_token, $oauth_token_secret) {
 	}
 
 	$res = ka_verify($access["screen_name"]);
+	if (isset($res["error"])) {
+		return $res;
+	}
 
 	$key = $res["key"];
 
@@ -75,13 +78,13 @@ function ka_verify($handle) {
 			), true
 		);
 	} catch (Exception $ex) {
-		die("Error connecting to server");
+		return array("error" => "Error connecting to server");
 	}
 
 	if (isset($res["error"])) {
-		die($res["error"]);
+		return $res;
 	} else if (!isset($res["gy"]) || !isset($res["id"])) {
-		die("Response error");
+		return array("error" => "Response error");
 	}
 
 	return array(

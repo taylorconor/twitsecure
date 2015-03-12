@@ -23,13 +23,23 @@ $g = $_REQUEST["g"];
 $gx = $_REQUEST["gx"];
 $handle = $_REQUEST["handle"];
 
-// private key
-$key = bcmod(bcpow($gx, SECRET), $n);
-
 $db = KeyAuthorityDB::instance();
 if (!$db) {
 	die(json_encode(array("error" => "DB fail")));
 }
+
+// check if this user is in the group
+$res = $db->query("SELECT count(*) as val FROM members WHERE handle='$handle'");
+$db_line = $res->fetchArray();
+if (!isset($db_line["val"])) {
+	die(json_encode(array("error" => "DB fail")));
+}
+if ($db_line["val"] == 0) {
+	die(json_encode(array("error" => "User not in group")));
+}
+
+// private key
+$key = bcmod(bcpow($gx, SECRET), $n);
 
 // insert the user into staging table (pk is generated automatically by sqlite)
 // the user will be moved to the client table if he passes verification
