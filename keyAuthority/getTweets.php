@@ -33,6 +33,10 @@ $connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET,
 $json = $connection->get("statuses/mentions_timeline");
 $json = json_decode(json_encode($json), true);
 
+if (isset($json["errors"])) {
+	die(Crypto::encrypt(json_encode(utf8_encode_r($json)), $secret));
+}
+
 // decrypt all tweets in the response with the KA's secret key. these tweets
 // will be re-encrypted later in this file using the client's key instead
 foreach ($json as $idx => $tweet) {
