@@ -26,6 +26,7 @@ require_once("../crypto.php");
 
 $fh = fopen(LOCAL_FEED, "r");
 $json = fread($fh, filesize(LOCAL_FEED));
+fclose($fh);
 $json = json_decode($json, true);
 
 if (isset($json["errors"])) {

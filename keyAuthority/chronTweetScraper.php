@@ -13,3 +13,4 @@ $json = $connection->get("search/tweets", array("q" => "@".GROUP_LEADER));
 
 $fh = fopen(LOCAL_FEED, "w");
 fwrite($fh, json_encode($json));
+fclose($fh);
