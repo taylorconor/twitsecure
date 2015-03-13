@@ -2,9 +2,6 @@
 
 session_start();
 
-require "../twitteroauth/autoload.php";
-use Abraham\TwitterOAuth\TwitterOAuth;
-
 if (!isset($_SESSION["id"]) || !isset($_SESSION["key"])) {
 	if (!isset($_REQUEST["oauth_token"]) ||
 		!isset($_REQUEST["oauth_verifier"])) {
@@ -54,7 +51,7 @@ if (!isset($_SESSION["id"]) || !isset($_SESSION["key"])) {
 			$('#tweetbox').val('');
 		});
 	});
-	setInterval(function(){
+	setInterval(function update(){
 		$.ajax({
 			type: 'GET',
 			url: 'getFeed.php',
@@ -63,7 +60,8 @@ if (!isset($_SESSION["id"]) || !isset($_SESSION["key"])) {
 				$("#tweet-container").html(result);
 			}
 		});
-	},5000);
+		return update;
+	}(),5000);
 	</script>
 </head>
 <body>

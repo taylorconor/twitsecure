@@ -7,6 +7,7 @@ if (!isset($_SESSION["id"]) || !isset($_SESSION["key"])) {
 }
 
 require_once("requester.php");
+require_once("constants.php");
 
 $tweets = get_tweets($_SESSION["id"], $_SESSION["key"]);
 
@@ -15,7 +16,8 @@ if (isset($tweets["errors"]) && isset($tweets["errors"][0])
 <h3 style="color: #F00"><?= $tweets["errors"][0]["message"] ?> </h3>
 <?php
 } else {
-foreach($tweets as $tweet) { ?>
+foreach($tweets["statuses"] as $tweet) {
+if ($tweet["in_reply_to_screen_name"] == GROUP_LEADER) {?>
 <div class="feed_stacked">
 <div class="feed_body">
 	<div class="row">
@@ -29,4 +31,4 @@ foreach($tweets as $tweet) { ?>
 	</div>
 </div>
 </div>
-<?php }} ?>
+<?php }}} ?>

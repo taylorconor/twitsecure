@@ -30,7 +30,7 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 $connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET,
 	OAUTH_TOKEN, OAUTH_TOKEN_SECRET);
 
-$json = $connection->get("statuses/mentions_timeline");
+$json = $connection->get("search/tweets", array("q" => "@".GROUP_LEADER));
 $json = json_decode(json_encode($json), true);
 
 if (isset($json["errors"])) {
@@ -39,10 +39,10 @@ if (isset($json["errors"])) {
 
 // decrypt all tweets in the response with the KA's secret key. these tweets
 // will be re-encrypted later in this file using the client's key instead
-foreach ($json as $idx => $tweet) {
-	$text = $json[$idx]["text"];
+foreach ($json["statuses"] as $idx => $tweet) {
+	$text = $json["statuses"][$idx]["text"];
 	$text = Crypto::decrypt(substr($text, strlen(GROUP_LEADER)+2), TWEET_KEY);
-	$json[$idx]["text"] = "@".GROUP_LEADER." ".$text;
+	$json["statuses"][$idx]["text"] = $text;
 }
 
 // recurse over entire array structure and UTF8 encode it
