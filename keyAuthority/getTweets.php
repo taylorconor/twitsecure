@@ -23,15 +23,10 @@ $secret = $db_line["secret"];
 
 require_once("constants.php");
 require_once("../crypto.php");
-require "../twitteroauth/autoload.php";
-use Abraham\TwitterOAuth\TwitterOAuth;
 
-// make a connection as the group leader
-$connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET,
-	OAUTH_TOKEN, OAUTH_TOKEN_SECRET);
-
-$json = $connection->get("search/tweets", array("q" => "@".GROUP_LEADER));
-$json = json_decode(json_encode($json), true);
+$fh = fopen(LOCAL_FEED, "r");
+$json = fread($fh, filesize(LOCAL_FEED));
+$json = json_decode($json, true);
 
 if (isset($json["errors"])) {
 	die(Crypto::encrypt(json_encode(utf8_encode_r($json)), $secret));
