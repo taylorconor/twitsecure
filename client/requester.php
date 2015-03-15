@@ -22,11 +22,21 @@ function request_auth($oauth_token, $oauth_token_secret) {
 	$access = $connection->oauth("oauth/access_token",
 		array("oauth_verifier" => $_REQUEST['oauth_verifier']));
 
-
 	if (!isset($access["oauth_token"]) || !isset($access["oauth_token_secret"])
 		|| !isset($access["user_id"]) || !isset($access["screen_name"])) {
 		die ("Invalid twitter response");
 	}
+
+	$connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET,
+		$access["oauth_token"], $access["oauth_token_secret"]);
+
+	$profile = $connection->get("users/show",
+		array("screen_name" => $access["screen_name"]));
+	$profile = json_decode(json_encode($profile), true);
+	if (!isset($profile["profile_image_url"])) {
+		die("Error connecting to Twitter");
+	}
+	$profile_img = $profile["profile_image_url"];
 
 	$res = ka_verify($access["screen_name"]);
 	if (isset($res["error"])) {
@@ -57,7 +67,8 @@ function request_auth($oauth_token, $oauth_token_secret) {
 
 	return array(
 		"key" => $key,
-		"id" => $res["id"]
+		"id" => $res["id"],
+		"profile_img" => $profile_img
 	);
 }
 

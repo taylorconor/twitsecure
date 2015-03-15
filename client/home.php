@@ -22,10 +22,11 @@ if (!isset($_SESSION["id"]) || !isset($_SESSION["key"])) {
 	$res = request_auth($_SESSION["oauth_token"],
 						$_SESSION["oauth_token_secret"]);
 
-	if (isset($res["id"]) && isset($res["key"])) {
+	if (isset($res["id"]) && isset($res["key"]) && isset($res["profile_img"])) {
 		// set session variables of our auth with the Key Authority
 		$_SESSION["id"] = $res["id"];
 		$_SESSION["key"] = $res["key"];
+		$_SESSION["profile_img"] = $res["profile_img"];
 	}
 }
 
@@ -78,10 +79,17 @@ if (!isset($_SESSION["id"]) || !isset($_SESSION["key"])) {
 	<div class="corgi_feed_well col-xs-4">
 		<div class="feed_body">
 			<div class="row">
-				<form>
-					<input id="tweetbox" name="t" style="width:275px">
-					<input type="submit" value="tweet" class="btn btn-primary">
-				</form>
+				<div class="feed_profile_pic">
+					<img src="<?= $_SESSION["profile_img"] ?>"
+						 alt="meta image" class="meta_image"
+						 style="margin-top:-7px;margin-left:-10px">
+				</div>
+				<div class="feed_text">
+					<form>
+						<input id="tweetbox" name="t" style="width:210px">
+						<input type="submit" value="tweet" class="btn btn-primary">
+					</form>
+				</div>
 			</div>
 		</div>
 	</div>
