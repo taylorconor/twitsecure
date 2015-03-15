@@ -11,7 +11,10 @@ require_once("constants.php");
 
 $tweets = get_tweets($_SESSION["id"], $_SESSION["key"]);
 
-if (isset($tweets["errors"]) && isset($tweets["errors"][0])
+if (!is_array($tweets)) { ?>
+<h3 style="color: #F00">Strange response:
+	<?php echo empty($tweets)?"empty!":$tweets ?> </h3>
+<?php } else if (isset($tweets["errors"]) && isset($tweets["errors"][0])
 	&& isset($tweets["errors"][0]["message"])) { ?>
 <h3 style="color: #F00"><?= $tweets["errors"][0]["message"] ?> </h3>
 <?php
