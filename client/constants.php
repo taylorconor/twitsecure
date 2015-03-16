@@ -2,8 +2,8 @@
 
 // client's secret, also known as 'x'
 define("SECRET", 6);
-define("KEYAUTHORITY", "http://localhost/twitsecure/keyAuthority");
-//define("KEYAUTHORITY", "http://taylorconor.com/twitsecure/keyAuthority");
+//define("KEYAUTHORITY", "http://localhost/twitsecure/keyAuthority");
+define("KEYAUTHORITY", "http://taylorconor.com/twitsecure/keyAuthority");
 
 // group leader
 define("GROUP_LEADER", "cs3031");

@@ -35,10 +35,10 @@ if (isset($json["errors"])) {
 
 // decrypt all tweets in the response with the KA's secret key. these tweets
 // will be re-encrypted later in this file using the client's key instead
-foreach ($json["statuses"] as $idx => $tweet) {
-	$text = $json["statuses"][$idx]["text"];
+foreach ($json as $idx => $tweet) {
+	$text = $json[$idx]["text"];
 	$text = Crypto::decrypt(substr($text, strlen(GROUP_LEADER)+2), TWEET_KEY);
-	$json["statuses"][$idx]["text"] = $text;
+	$json[$idx]["text"] = $text;
 }
 
 // recurse over entire array structure and UTF8 encode it
