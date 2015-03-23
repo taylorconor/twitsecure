@@ -50,17 +50,46 @@ class StreamingAPI
 	//
 	private function process_tweet(array $_data)
 	{
-		print_r($_data);
-		$fh = fopen(LOCAL_FEED, "r");
-		$feed = fread($fh, filesize(LOCAL_FEED));
-		fclose($fh);
+		if (!isset($_data["text"]) || !isset($_data["in_reply_to_screen_name"])
+			|| (!isset($_data["user"])
+				&& !isset($_data["user"]["profile_image_url"]))) {
+			echo "Invalid API response\n";
+			return true;
+		}
+		echo "Tweet with text: ".$_data["text"]."\n";
+		if ($_data["in_reply_to_screen_name"] != GROUP_LEADER) {
+			echo "Tweet was meant for user " .
+				$_data["in_reply_to_screen_name"]."\n";
+			return true;
+		}
 
-		$json = json_decode($feed, true);
-		$json[count($json)] = $_data;
+		$json = array();
+		if (file_exists(LOCAL_FEED)) {
+			$fh = fopen(LOCAL_FEED, "r");
+			$feed = fread($fh, filesize(LOCAL_FEED));
+			fclose($fh);
+
+			// store a list of json-encoded tweets
+			$json = json_decode($feed, true);
+			if ($json == false) {
+				echo "JSON IS FALSE!\nlength = ". filesize(LOCAL_FEED) ."\nfeed = $feed\n";
+				return true;
+			}
+		}
+
+		$arr = array("text" => $_data["text"],
+			"pic" => $_data["user"]["profile_image_url"]);
+
+		$json[count($json)] = $arr;
+		$json_enc = json_encode($json);
 
 		$fh = fopen(LOCAL_FEED, "w");
-		fwrite($fh, json_encode($json));
+		fwrite($fh, $json_enc);
 		fclose($fh);
+
+		// results of file stat operations can be cached, we don't want that
+		// because our tmp file updates frequently, so always clear cache
+		clearstatcache();
 
 		return true;
 	}

@@ -57,12 +57,11 @@ if (!isset($_SESSION["id"]) || !isset($_SESSION["key"])) {
 			type: 'GET',
 			url: 'getFeed.php',
 			success: function(result) {
-				console.log("run!");
 				$("#tweet-container").html(result);
 			}
 		});
 		return update;
-	}(),5000);
+	}(),1000);
 	</script>
 </head>
 <body>

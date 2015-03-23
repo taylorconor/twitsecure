@@ -9,5 +9,6 @@ while(true) {
 
 	$t->login(CONSUMER_KEY, CONSUMER_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET);
 
+	echo "starting!\n";
 	$t->start(array('@'.GROUP_LEADER));
 }
