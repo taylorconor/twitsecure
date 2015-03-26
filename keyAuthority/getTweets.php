@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * keyAuthority/getTweets.php
+ *
+ * Decrypts the local tweet feed, re-encrypts it with the requesting user's
+ * private key (shared with KA using Diffie-Hellman) and send the encrypted
+ * tweets back to them
+ */
+
 if (!isset($_REQUEST["id"])) {
 	die("Invalid request");
 }

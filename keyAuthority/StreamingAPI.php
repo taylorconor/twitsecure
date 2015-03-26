@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * keyAuthority/StreamingAPI.php
+ *
+ * This makes use of Twitter's streaming API to allow KA to read all tweets
+ * mentioning the group leader and put them in a local file, so that anyone
+ * can request them
+ */
+
 require_once("constants.php");
 
 ini_set('display_startup_errors',1);
@@ -71,10 +79,6 @@ class StreamingAPI
 
 			// store a list of json-encoded tweets
 			$json = json_decode($feed, true);
-			if ($json == false) {
-				echo "JSON IS FALSE!\nlength = ". filesize(LOCAL_FEED) ."\nfeed = $feed\n";
-				return true;
-			}
 		}
 
 		$arr = array("text" => $_data["text"],

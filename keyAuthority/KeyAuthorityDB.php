@@ -1,5 +1,11 @@
 <?
 
+/*
+ * keyAuthority/KeyAuthorityDB.php
+ *
+ * Helper singleton class for easy access to Key Authority's database
+ */
+
 class KeyAuthorityDB extends SQLite3 {
 
 	private static $inst;

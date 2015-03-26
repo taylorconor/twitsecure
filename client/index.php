@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * client/index.php
+ *
+ * User-facing landing page of the local client. Responsible for establishing
+ * Twitter authentication and setting relevant session variables
+ */
+
 // start the session
 session_start();
 

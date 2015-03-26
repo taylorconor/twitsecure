@@ -1,5 +1,11 @@
 <?php
 
+/*
+ * keyAuthority/postTweet.php
+ * Decrypts the tweet from the client, then re-encrypts it with the KA's private
+ * key and posts it to Twitter
+ */
+
 if (!isset($_REQUEST["id"]) || !isset($_REQUEST["t"])) {
 	die("Invalid request");
 }

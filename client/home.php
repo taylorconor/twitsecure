@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * client/home.php
+ *
+ * The main page of the user-facing application. Allows the user to post tweets
+ * and see the live group chat
+ */
+
 session_start();
 
 if (!isset($_SESSION["id"]) || !isset($_SESSION["key"])) {
@@ -76,21 +83,21 @@ if (!isset($_SESSION["id"]) || !isset($_SESSION["key"])) {
 	<?php
 	} else { ?>
 	<div class="corgi_feed_well col-xs-4">
-		<div class="feed_body">
-			<div class="row">
-				<div class="feed_profile_pic">
-					<img src="<?= $_SESSION["profile_img"] ?>"
-						 alt="meta image" class="meta_image"
-						 style="margin-top:-7px;margin-left:-10px">
-				</div>
-				<div class="feed_text">
-					<form>
-						<input id="tweetbox" name="t" style="width:210px">
-						<input type="submit" value="tweet" class="btn btn-primary">
-					</form>
-				</div>
+	<div class="feed_body">
+		<div class="row">
+			<div class="feed_profile_pic">
+				<img src="<?= $_SESSION["profile_img"] ?>"
+					 alt="meta image" class="meta_image"
+					 style="margin-top:-7px;margin-left:-10px">
+			</div>
+			<div class="feed_text">
+				<form>
+					<input id="tweetbox" name="t" style="width:210px">
+					<input type="submit" value="tweet" class="btn btn-primary">
+				</form>
 			</div>
 		</div>
+	</div>
 	</div>
 
 	<div id="tweet-container" class="corgi_feed_well col-xs-7 col-xs-offset-1">

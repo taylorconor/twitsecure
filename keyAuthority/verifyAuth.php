@@ -2,6 +2,8 @@
 
 /*
  * keyAuthority/verifyAuth.php
+ *
+ * Sets up full authentication between client and key authority
  */
 
 require_once("KeyAuthorityDB.php");

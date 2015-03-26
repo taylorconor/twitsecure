@@ -1,5 +1,11 @@
 <?php
 
+/*
+ * client/constants.php
+ *
+ * Client-specific constants, shared between multiple client files
+ */
+
 // client's secret, also known as 'x'
 define("SECRET", 6);
 //define("KEYAUTHORITY", "http://localhost/twitsecure/keyAuthority");

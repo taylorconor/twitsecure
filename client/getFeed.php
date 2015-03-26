@@ -1,5 +1,11 @@
 <?php
 
+/*
+ * client/getFeed.php
+ *
+ * Used by the client to interface with the Key Authority to format the feed of
+ * tweets nicely
+ */
 session_start();
 
 if (!isset($_SESSION["id"]) || !isset($_SESSION["key"])) {
@@ -22,15 +28,16 @@ if (!is_array($tweets)) {
 				</div>
 			</div>
 		</div>
-		<?php } else { ?>
-<h3 style="color: #F00">Strange response:
-	<?php echo $tweets ?> </h3>
-<?php }} else if (isset($tweets["errors"]) && isset($tweets["errors"][0])
+<?php } else { ?>
+
+<h3 style="color: #F00">Strange response: <?php echo $tweets ?> </h3>
+<?php }}
+
+else if (isset($tweets["errors"]) && isset($tweets["errors"][0])
 	&& isset($tweets["errors"][0]["message"])) { ?>
 <h3 style="color: #F00"><?= $tweets["errors"][0]["message"] ?> </h3>
-<?php
-} else {
-foreach(array_reverse($tweets) as $tweet) { ?>
+
+<?php } else { foreach(array_reverse($tweets) as $tweet) { ?>
 <div class="feed_stacked">
 <div class="feed_body">
 	<div class="row">

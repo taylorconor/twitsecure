@@ -1,5 +1,11 @@
 <?
 
+/*
+ * keyAuthority/constants.php
+ *
+ * KA-specific constants, shared between multiple KA files
+ */
+
 // Key Authority's secret tweet signing key
 define("TWEET_KEY", 1234567);
 

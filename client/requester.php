@@ -3,8 +3,8 @@
 /*
  * client/requester.php
  *
- * Used by the client to initiate the request for authentication with the
- * Key Authority server, using the Diffie-Hellman Key Exchange method
+ * Used by the client to handle multiple different types of requests with the
+ * Key Authority
  */
 
 require_once("constants.php");
@@ -12,6 +12,12 @@ require_once("../crypto.php");
 require "../twitteroauth/autoload.php";
 use Abraham\TwitterOAuth\TwitterOAuth;
 
+/*
+ * request_auth
+ * Request authentication with the Key Authority, giving temporary Twitter auth
+ * keys as parameters. This allows the KA to verify that this user actually
+ * owns the twitter account they claim to own.
+ */
 function request_auth($oauth_token, $oauth_token_secret) {
 
 	// build a temporary twitter connection based on the temporary oauth keys
@@ -72,9 +78,13 @@ function request_auth($oauth_token, $oauth_token_secret) {
 	);
 }
 
+/*
+ * ka_verify
+ * initiate Diffie-Hellman key exchange with the Key Authority
+ */
 function ka_verify($handle) {
 
-	// list some prime numbers
+	// list some prime numbers to use as n
 	$primes = array(961751207, 961751209, 961751243, 961751257,
 					961751261, 961751267, 961751321, 961751339);
 
